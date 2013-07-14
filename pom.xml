@@ -7,6 +7,11 @@
     <groupId>com.meistermeier.homeremote</groupId>
     <artifactId>HomeRemote</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <spring.version>3.2.3.RELEASE</spring.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -32,6 +37,21 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 

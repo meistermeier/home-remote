@@ -1,16 +1,9 @@
 #JSGF V1.0;
 
-/**
- * JSGF Grammar for Hello World example
- */
-
 grammar home;
 
-public <home> = <videocontrol> | <housecontrol>;
-<housecontrol> = Houseidubudi;
+public <home> = <maincontrol> | <videocontrol>;
+<maincontrol> = remote control <maincommand>;
+<maincommand> = (activate | sleep);
 <videocontrol> = <video> ( play | pause | stop );
 <video> = ( video player | movie );
-
-/**
- *(Good morning | Hello) ( Bhiksha | Evandro | Paul | Philip | Rita | Will );
- */

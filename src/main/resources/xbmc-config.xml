@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="xbmc" class="com.meistermeier.homeremote.xbmc.Xbmc">
+        <constructor-arg value="${xbmc.url}"/>
+    </bean>
+
+    <bean id="xbmcControl" class="com.meistermeier.homeremote.xbmc.XbmcControl">
+        <constructor-arg ref="xbmc"/>
+    </bean>
+
+    <bean id="xbmcVoiceCommand" class="com.meistermeier.homeremote.xbmc.XbmcVoiceCommand" init-method="registerCommand">
+        <constructor-arg ref="xbmcControl"/>
+    </bean>
+</beans>
