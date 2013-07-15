@@ -1,13 +1,18 @@
 # Home Remote
 Version: 0.something-alpha  
-This is so much WIP ;)
-## About
-**Short description:** This project is about controlling stuff with other stuff.
+This is so much WIP I cannot even tell if you can name it alpha ;)
 
-**Long description:** At this time the home remote project defines the following inputs and outputs:
-### inputs
+## About
+### Short description
+This project is about controlling stuff with other stuff.
+
+### Long description
+At this time the home remote project defines the following inputs and outputs:
+
+#### inputs
 - voice
-### outputs
+
+#### outputs
 - [XBMC][1]
 
 ## Compile
@@ -17,13 +22,17 @@ If you use maven to compile the sources at the command line you have to define t
 e.g. `mvn -Dsphinx=path/to/sphinx/lib clean package`
 
 ## Configuration
+_(documentation in progress)_
+
+There is a default application.properties which gives you an outline for the available config parameter. You may (and should) provide an optional .home_remote config
+file in your home directory (currently only tested with *nix environments) if you want to override any settings like xbmc url.
 
 ## Planned endpoints
 ### inputs
-- REST (or something similar :P)
-### outputs
-- [NETIO-230B (Power Distribution Unit with network support)][3]
-- 433 Mhz Radio Transmitter (for wireless power outlets)
+- REST: will give the option to implement against an api for other client applications
+### outputs (devices at home :)
+- [NETIO-230B (PDU with network support)][3]
+- 433 Mhz Radio Transmitter (to control simple wireless power outlets)
 
 [1]: http://xbmc.org/ "XBMC"
 [2]: http://sourceforge.net/projects/cmusphinx/files/sphinx4/1.0%20beta6/ "sphinx at sourceforge"
