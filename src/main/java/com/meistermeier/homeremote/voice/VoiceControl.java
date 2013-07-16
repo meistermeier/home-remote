@@ -1,7 +1,7 @@
 package com.meistermeier.homeremote.voice;
 
 import com.meistermeier.homeremote.voice.command.VoiceCommand;
-import com.meistermeier.homeremote.voice.command.VoiceCommandEvaluator;
+import com.meistermeier.homeremote.voice.command.VoiceCommandRegistry;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
@@ -10,33 +10,31 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
  * @author Gerrit Meier
  */
-public class VoiceControl {
+public class VoiceControl extends Thread {
 
     private final static Logger LOG = LoggerFactory.getLogger(VoiceControl.class);
 
     private final Microphone microphone;
     private final Recognizer recognizer;
-    private final VoiceCommandEvaluator voiceCommandEvaluator;
+    private final VoiceCommandRegistry voiceCommandRegistry;
 
-    private VoiceControlThread voiceControlThread;
 
-    public VoiceControl(VoiceCommandEvaluator voiceCommandEvaluator) {
+    public VoiceControl(VoiceCommandRegistry voiceCommandRegistry) {
+        this.voiceCommandRegistry = voiceCommandRegistry;
+
         ConfigurationManager cm = new ConfigurationManager(VoiceControl.class.getResource("/homeremote.config.xml"));
-        this.voiceCommandEvaluator = voiceCommandEvaluator;
         recognizer = (Recognizer) cm.lookup("recognizer");
         microphone = (Microphone) cm.lookup("microphone");
     }
 
     public void startListening() {
         setupListening();
-        voiceControlThread = new VoiceControlThread(this);
-        voiceControlThread.start();
+        start();
     }
 
     private void setupListening() {
@@ -47,21 +45,11 @@ public class VoiceControl {
         }
     }
 
-    protected synchronized Optional<VoiceCommand> evaluateRecognizedCommand(String[] commandArgs) {
-        String activationCommand = commandArgs[0];
-        return retrieveVoiceCommand(activationCommand);
-    }
-
-    protected Optional<VoiceCommand> retrieveVoiceCommand(String activationCommand) {
-        return voiceCommandEvaluator.evaluateInput(activationCommand);
-    }
-
-    protected boolean processComand(String[] commandOptions, Optional<VoiceCommand> voiceCommandOptional) {
-        if (voiceCommandOptional.isPresent()) {
-            VoiceCommand voiceCommand = voiceCommandOptional.get();
-            return voiceCommand.evaluateOptions(commandOptions);
+    protected synchronized Optional<VoiceCommand> evaluateRecognizedCommand(String command) {
+        if (StringUtils.isBlank(command)) {
+            return Optional.empty();
         }
-        return false;
+        return voiceCommandRegistry.getVoiceCommand(command);
     }
 
     /*
@@ -75,42 +63,27 @@ public class VoiceControl {
         recognizer.deallocate();
     }*/
 
-    class VoiceControlThread extends Thread {
 
-        private final VoiceControl voiceControl;
+    @Override
+    public void run() {
+        LOG.info("start voice control");
 
-        VoiceControlThread(VoiceControl voiceControl) {
-            this.voiceControl = voiceControl;
-            setUncaughtExceptionHandler((t, e) ->
-                    LOG.info("voice control listening was shut down")
-            );
-        }
+        while (true) {
+            Result result = recognizer.recognize();
 
-        @Override
-        public void run() {
-            LOG.info("start voice control");
+            if (result == null) {
+                LOG.warn("got no result");
+                continue;
+            }
 
-            while (true) {
-                Result result = recognizer.recognize();
+            String recognizedString = result.getBestFinalResultNoFiller();
+            LOG.debug("understood '{}'", recognizedString);
 
-                if (result == null) {
-                    LOG.warn("got no result");
-                    continue;
-                }
-
-                String recognizedString = result.getBestFinalResultNoFiller();
-                if (StringUtils.isNotBlank(recognizedString)) {
-                    String[] arguments = recognizedString.split(" ");
-                    Optional<VoiceCommand> voiceCommand = voiceControl.evaluateRecognizedCommand(arguments);
-                    boolean processed = voiceControl.processComand(Arrays.copyOfRange(arguments, 1, arguments.length), voiceCommand);
-
-                    if (!processed && LOG.isDebugEnabled()) {
-                        LOG.debug("command {} was not processed.", recognizedString);
-                    }
-                }
-                LOG.debug("understood '{}'", recognizedString);
+            Optional<VoiceCommand> voiceCommandOptional = evaluateRecognizedCommand(recognizedString);
+            if (voiceCommandOptional.isPresent()) {
+                VoiceCommand voiceCommand = voiceCommandOptional.get();
             }
         }
-
     }
+
 }
