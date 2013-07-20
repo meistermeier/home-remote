@@ -1,7 +1,5 @@
 package com.meistermeier.homeremote.voice;
 
-import com.meistermeier.homeremote.voice.command.VoiceCommand;
-import com.meistermeier.homeremote.voice.command.VoiceCommandRegistry;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
@@ -45,7 +43,7 @@ public class VoiceControl extends Thread {
         }
     }
 
-    protected synchronized Optional<VoiceCommand> evaluateRecognizedCommand(String command) {
+    protected Optional<VoiceCommand> evaluateRecognizedCommand(String command) {
         if (StringUtils.isBlank(command)) {
             return Optional.empty();
         }
@@ -77,11 +75,15 @@ public class VoiceControl extends Thread {
             }
 
             String recognizedString = result.getBestFinalResultNoFiller();
-            LOG.debug("understood '{}'", recognizedString);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("understood '{}'", recognizedString);
+            }
 
             Optional<VoiceCommand> voiceCommandOptional = evaluateRecognizedCommand(recognizedString);
             if (voiceCommandOptional.isPresent()) {
                 VoiceCommand voiceCommand = voiceCommandOptional.get();
+                voiceCommand.evaluateAndExectue(recognizedString);
             }
         }
     }

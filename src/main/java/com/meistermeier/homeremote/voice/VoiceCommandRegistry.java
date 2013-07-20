@@ -1,4 +1,4 @@
-package com.meistermeier.homeremote.voice.command;
+package com.meistermeier.homeremote.voice;
 
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;

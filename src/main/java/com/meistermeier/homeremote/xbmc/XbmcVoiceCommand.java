@@ -1,11 +1,9 @@
 package com.meistermeier.homeremote.xbmc;
 
-import com.meistermeier.homeremote.voice.command.AbstractVoiceCommand;
-import org.apache.commons.lang.StringUtils;
+import com.meistermeier.homeremote.network.NetworkCommand;
+import com.meistermeier.homeremote.voice.AbstractVoiceCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 /**
  * @author Gerrit Meier
@@ -32,7 +30,7 @@ public class XbmcVoiceCommand extends AbstractVoiceCommand {
     }
 
     @Override
-    public boolean evaluateOptions(String command) {
+    public boolean evaluateAndExectue(String command) {
         String options = removeActivationString(command);
         switch (options) {
             case OPTION_PLAY:

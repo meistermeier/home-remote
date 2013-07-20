@@ -1,4 +1,4 @@
-package com.meistermeier.homeremote.voice.command;
+package com.meistermeier.homeremote.voice;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

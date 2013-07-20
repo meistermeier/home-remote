@@ -1,4 +1,4 @@
-package com.meistermeier.homeremote.voice.command;
+package com.meistermeier.homeremote.voice;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +18,22 @@ public interface VoiceCommand extends ApplicationContextAware {
      * default register of voice command implementation
      */
     default void registerCommand() {
+        registerVoiceCommnad();
+        registerNetworkCommand();
+    }
+
+    default void registerVoiceCommnad() {
+        String[] possibleVoiceCommandRegistryBeans = getApplicationContext().getBeanNamesForType(VoiceCommandRegistry.class);
+        if (possibleVoiceCommandRegistryBeans.length == 1) {
+            VoiceCommandRegistry voiceCommandRegistry = (VoiceCommandRegistry) getApplicationContext().getBean(possibleVoiceCommandRegistryBeans[0]);
+            voiceCommandRegistry.register(this);
+            LOG.info("registered {} in voice commands.", getClass());
+        } else {
+            LOG.info("no voice support enabled.");
+        }
+    }
+
+    default void registerNetworkCommand() {
         String[] possibleVoiceCommandRegistryBeans = getApplicationContext().getBeanNamesForType(VoiceCommandRegistry.class);
         if (possibleVoiceCommandRegistryBeans.length == 1) {
             VoiceCommandRegistry voiceCommandRegistry = (VoiceCommandRegistry) getApplicationContext().getBean(possibleVoiceCommandRegistryBeans[0]);
@@ -36,7 +52,7 @@ public interface VoiceCommand extends ApplicationContextAware {
         return ArrayUtils.contains(getActivationCommands(), command);
     }
 
-    boolean evaluateOptions(String options);
+    boolean evaluateAndExectue(String options);
 
     default String removeActivationString(String command) {
         if (StringUtils.isBlank(command)) {
