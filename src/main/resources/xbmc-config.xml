@@ -11,7 +11,7 @@
         <constructor-arg ref="xbmc"/>
     </bean>
 
-    <bean id="xbmcVoiceCommand" class="com.meistermeier.homeremote.xbmc.XbmcVoiceCommand" init-method="registerCommand">
+    <bean id="xbmcVoiceCommand" class="com.meistermeier.homeremote.xbmc.XbmcCommand" init-method="registerCommand">
         <constructor-arg ref="xbmcControl"/>
     </bean>
 </beans>

@@ -1,5 +1,7 @@
 package com.meistermeier.homeremote.voice;
 
+import com.meistermeier.homeremote.command.Command;
+import com.meistermeier.homeremote.command.CommandRegistry;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
@@ -19,11 +21,11 @@ public class VoiceControl extends Thread {
 
     private final Microphone microphone;
     private final Recognizer recognizer;
-    private final VoiceCommandRegistry voiceCommandRegistry;
+    private final CommandRegistry commandRegistry;
 
 
-    public VoiceControl(VoiceCommandRegistry voiceCommandRegistry) {
-        this.voiceCommandRegistry = voiceCommandRegistry;
+    public VoiceControl(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
 
         ConfigurationManager cm = new ConfigurationManager(VoiceControl.class.getResource("/homeremote.config.xml"));
         recognizer = (Recognizer) cm.lookup("recognizer");
@@ -43,11 +45,11 @@ public class VoiceControl extends Thread {
         }
     }
 
-    protected Optional<VoiceCommand> evaluateRecognizedCommand(String command) {
+    protected Optional<Command> evaluateRecognizedCommand(String command) {
         if (StringUtils.isBlank(command)) {
             return Optional.empty();
         }
-        return voiceCommandRegistry.getVoiceCommand(command);
+        return commandRegistry.getCommand(command);
     }
 
     /*
@@ -76,14 +78,18 @@ public class VoiceControl extends Thread {
 
             String recognizedString = result.getBestFinalResultNoFiller();
 
+            if (StringUtils.isBlank(recognizedString)) {
+                continue;
+            }
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug("understood '{}'", recognizedString);
             }
 
-            Optional<VoiceCommand> voiceCommandOptional = evaluateRecognizedCommand(recognizedString);
+            Optional<Command> voiceCommandOptional = evaluateRecognizedCommand(recognizedString);
             if (voiceCommandOptional.isPresent()) {
-                VoiceCommand voiceCommand = voiceCommandOptional.get();
-                voiceCommand.evaluateAndExectue(recognizedString);
+                Command command = voiceCommandOptional.get();
+                command.evaluateAndExectue(recognizedString);
             }
         }
     }

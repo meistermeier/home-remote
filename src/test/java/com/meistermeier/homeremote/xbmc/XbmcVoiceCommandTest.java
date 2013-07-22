@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
  */
 public class XbmcVoiceCommandTest {
 
-    XbmcVoiceCommand voiceCommand = new XbmcVoiceCommand(new XbmcControl(new Xbmc("dummyurl")));
+    XbmcCommand voiceCommand = new XbmcCommand(new XbmcControl(new Xbmc("dummyurl")));
 
     @Test
     public void testIsRegisteredFor() throws Exception {

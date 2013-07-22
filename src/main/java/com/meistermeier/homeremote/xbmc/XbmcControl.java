@@ -1,5 +1,6 @@
 package com.meistermeier.homeremote.xbmc;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -27,25 +28,25 @@ public class XbmcControl {
         this.xbmc = xbmc;
     }
 
-    public boolean playPause() {
+    public String playPause() {
         try {
             StringEntity entity = new StringEntity("{\"jsonrpc\": \"2.0\", \"method\": \"Player.PlayPause\", \"params\": { \"playerid\": 1 }, \"id\": 1}");
             postEntity(entity);
-            return true;
+            return "play/pause";
         } catch (IOException e) {
             LOG.error("Could not send message to XBMC.", e);
-            return false;
+            return "Error: Could not send message to XBMC";
         }
     }
 
-    public boolean stopMovie() {
+    public String stopMovie() {
         try {
             StringEntity entity = new StringEntity("{\"jsonrpc\": \"2.0\", \"method\": \"Player.Stop\", \"params\": { \"playerid\": 1 }, \"id\": 1}");
             postEntity(entity);
-            return true;
+            return "stop";
         } catch (IOException e) {
             LOG.error("Could not send message to XBMC.", e);
-            return false;
+            return "Error: Could not send message to XBMC";
         }
     }
 

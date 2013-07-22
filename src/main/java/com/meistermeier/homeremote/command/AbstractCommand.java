@@ -1,4 +1,4 @@
-package com.meistermeier.homeremote.voice;
+package com.meistermeier.homeremote.command;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 /**
  * @author Gerrit Meier
  */
-public abstract class AbstractVoiceCommand implements VoiceCommand {
+public abstract class AbstractCommand implements Command {
 
     private ApplicationContext applicationContext;
 

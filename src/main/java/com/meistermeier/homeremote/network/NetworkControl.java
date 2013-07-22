@@ -1,14 +1,14 @@
 package com.meistermeier.homeremote.network;
 
+import com.meistermeier.homeremote.command.Command;
+import com.meistermeier.homeremote.command.CommandRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Optional;
 
 /**
  * @author Gerrit Meier
@@ -16,15 +16,19 @@ import java.net.Socket;
 public class NetworkControl extends Thread {
 
     private final static Logger LOG = LoggerFactory.getLogger(NetworkControl.class);
-    private ServerSocket serverSocket;
 
-    public NetworkControl() {
+    private ServerSocket serverSocket;
+    private final CommandRegistry commandRegistry;
+
+    public NetworkControl(CommandRegistry commandRegistry, int port) {
+        this.commandRegistry = commandRegistry;
+
         try {
-            serverSocket = new ServerSocket(1337);
+            serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             LOG.error("Could not acquire port to listen for incomcing commands", e);
-        }
 
+        }
     }
 
     @Override
@@ -50,23 +54,36 @@ public class NetworkControl extends Thread {
         public void run() {
             try {
                 boolean disconnected = false;
+                InputStream inputStream = socket.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+                OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
+                LOG.info("opened connection to client {}", socket);
                 while (!disconnected) {
+                    String commandInput;
+                    while (!(commandInput = br.readLine()).equals("quit")) {
+                        Optional<Command> commandOptional = commandRegistry.getCommand(commandInput);
+                        if (commandOptional.isPresent()) {
+                            Command command = commandOptional.get();
+                            String result = command.evaluateAndExectue(commandInput);
 
-                    InputStream inputStream = socket.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+                            writer.write(result);
+                            writer.write("\n");
+                            writer.flush();
 
-                    String command;
-                    while (!(command = br.readLine()).equals("quit")) {
-                        LOG.debug(command);
+                        }
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(commandInput);
+                        }
                     }
 
-                    if (command.equals("quit")) {
+                    if (commandInput.equals("quit")) {
                         disconnected = true;
                     }
-
                 }
 
-                LOG.debug("closed connection to client");
+                LOG.info("closed connection to client {}", socket);
+                writer.close();
+                inputStream.close();
                 socket.close();
 
             } catch (IOException e) {

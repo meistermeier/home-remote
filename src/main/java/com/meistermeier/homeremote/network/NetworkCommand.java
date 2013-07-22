@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 public interface NetworkCommand {
 
     default boolean isRegisteredFor(String command) {
-        if(StringUtils.isNotBlank(command)) {
+        if (StringUtils.isNotBlank(command)) {
             return (command.split(" ")[0]).equals(getMainCommand());
         }
         return false;

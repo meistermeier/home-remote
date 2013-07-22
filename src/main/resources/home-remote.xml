@@ -5,6 +5,10 @@
 
     <context:property-placeholder ignore-resource-not-found="true" location="classpath:application.properties, file:${user.home}/.home_remote"/>
 
+    <bean id="commandRegistry" class="com.meistermeier.homeremote.command.CommandRegistry"/>
+
+    <bean id="buildInCommand" class="com.meistermeier.homeremote.command.BuildInCommand" init-method="registerCommand"/>
+
     <!-- Inputs -->
     <!-- enable network support -->
     <import resource="network-control.xml"/>

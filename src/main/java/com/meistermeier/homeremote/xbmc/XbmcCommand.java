@@ -1,16 +1,15 @@
 package com.meistermeier.homeremote.xbmc;
 
-import com.meistermeier.homeremote.network.NetworkCommand;
-import com.meistermeier.homeremote.voice.AbstractVoiceCommand;
+import com.meistermeier.homeremote.command.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Gerrit Meier
  */
-public class XbmcVoiceCommand extends AbstractVoiceCommand {
+public class XbmcCommand extends AbstractCommand {
 
-    private final static Logger LOG = LoggerFactory.getLogger(XbmcVoiceCommand.class);
+    private final static Logger LOG = LoggerFactory.getLogger(XbmcCommand.class);
 
     private static final String[] ACTIVATE_COMMANDS = {"video player", "movie"};
 
@@ -20,7 +19,7 @@ public class XbmcVoiceCommand extends AbstractVoiceCommand {
 
     private final XbmcControl xbmcControl;
 
-    public XbmcVoiceCommand(XbmcControl xbmcControl) {
+    public XbmcCommand(XbmcControl xbmcControl) {
         this.xbmcControl = xbmcControl;
     }
 
@@ -30,7 +29,7 @@ public class XbmcVoiceCommand extends AbstractVoiceCommand {
     }
 
     @Override
-    public boolean evaluateAndExectue(String command) {
+    public String evaluateAndExectue(String command) {
         String options = removeActivationString(command);
         switch (options) {
             case OPTION_PLAY:
@@ -41,7 +40,7 @@ public class XbmcVoiceCommand extends AbstractVoiceCommand {
                 return xbmcControl.stopMovie();
             default:
                 LOG.info("que? {} is not an option.", options);
-                return false;
+                return "unknown command " + options;
         }
     }
 

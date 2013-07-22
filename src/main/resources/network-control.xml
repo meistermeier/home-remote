@@ -3,6 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="networkControl" class="com.meistermeier.homeremote.network.NetworkControl" init-method="start"/>
+    <bean id="networkControl" class="com.meistermeier.homeremote.network.NetworkControl" init-method="start">
+        <constructor-arg index="0" ref="commandRegistry"/>
+        <constructor-arg index="1" value="${telnet.port}"/>
+    </bean>
 
 </beans>
