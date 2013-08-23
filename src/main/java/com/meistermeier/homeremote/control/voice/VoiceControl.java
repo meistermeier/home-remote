@@ -1,23 +1,11 @@
-package com.meistermeier.homeremote.voice;
-
-import com.meistermeier.homeremote.command.Command;
-import com.meistermeier.homeremote.command.CommandRegistry;
-import edu.cmu.sphinx.frontend.util.Microphone;
-import edu.cmu.sphinx.recognizer.Recognizer;
-import edu.cmu.sphinx.result.Result;
-import edu.cmu.sphinx.util.props.ConfigurationManager;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
+package com.meistermeier.homeremote.control.voice;
 
 /**
  * @author Gerrit Meier
  */
 public class VoiceControl extends Thread {
 
-    private final static Logger LOG = LoggerFactory.getLogger(VoiceControl.class);
+    /*private final static Logger LOG = LoggerFactory.getLogger(VoiceControl.class);
 
     private final Microphone microphone;
     private final Recognizer recognizer;
@@ -61,7 +49,7 @@ public class VoiceControl extends Thread {
         microphone.getTimer().stop();
         microphone.stopRecording();
         recognizer.deallocate();
-    }*/
+    }
 
 
     @Override
@@ -92,6 +80,6 @@ public class VoiceControl extends Thread {
                 command.evaluateAndExectue(recognizedString);
             }
         }
-    }
+    }*/
 
 }

@@ -1,6 +1,5 @@
-package com.meistermeier.homeremote.xbmc;
+package com.meistermeier.homeremote.command.xbmc;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -28,40 +27,60 @@ public class XbmcControl {
         this.xbmc = xbmc;
     }
 
-    public String playPause() {
+    public String play() {
         try {
-            StringEntity entity = new StringEntity("{\"jsonrpc\": \"2.0\", \"method\": \"Player.PlayPause\", \"params\": { \"playerid\": 1 }, \"id\": 1}");
-            postEntity(entity);
-            return "play/pause";
+            sendPlayPauseCommand();
+            return "movie playing";
         } catch (IOException e) {
             LOG.error("Could not send message to XBMC.", e);
-            return "Error: Could not send message to XBMC";
+            return "Error: Could not send message play to XBMC";
+        }
+    }
+
+    public String pause() {
+        try {
+            sendPlayPauseCommand();
+            return "movie paused";
+        } catch (IOException e) {
+            LOG.error("Could not send message to XBMC.", e);
+            return "Error: Could not send message pause to XBMC";
         }
     }
 
     public String stopMovie() {
         try {
-            StringEntity entity = new StringEntity("{\"jsonrpc\": \"2.0\", \"method\": \"Player.Stop\", \"params\": { \"playerid\": 1 }, \"id\": 1}");
-            postEntity(entity);
-            return "stop";
+            sendStopCommand();
+            return "movie stopped";
         } catch (IOException e) {
             LOG.error("Could not send message to XBMC.", e);
-            return "Error: Could not send message to XBMC";
+            return "Error: Could not send message stop to XBMC";
         }
     }
 
-    private void postEntity(StringEntity entity) throws IOException {
+    protected void sendPlayPauseCommand() throws IOException {
+        StringEntity entity = new StringEntity("{\"jsonrpc\": \"2.0\", \"method\": \"Player.PlayPause\", \"params\": { \"playerid\": 1 }, \"id\": 1}");
+        postEntity(entity);
+    }
+
+    protected void sendStopCommand() throws IOException {
+        StringEntity entity = new StringEntity("{\"jsonrpc\": \"2.0\", \"method\": \"Player.Stop\", \"params\": { \"playerid\": 1 }, \"id\": 1}");
+        postEntity(entity);
+    }
+
+    private String postEntity(StringEntity entity) throws IOException {
         HttpPost post = new HttpPost(xbmc.getUrl());
         post.setHeader("Content-Type", "application/json");
         post.setEntity(entity);
         HttpClient client = new DefaultHttpClient();
         HttpResponse response = client.execute(post);
-        System.out.println(response.getStatusLine());
         InputStream content = response.getEntity().getContent();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content));
+        StringBuilder responseMessage = new StringBuilder();
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            System.out.println(line);
+            responseMessage.append(line);
         }
+
+        return responseMessage.toString();
     }
 }

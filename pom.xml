@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <spring.version>3.2.3.RELEASE</spring.version>
-        <sphinx.path>${sphinx}</sphinx.path>
+        <!--sphinx.path>${sphinx}</sphinx.path-->
+        <smack.path>${smack}</smack.path>
     </properties>
 
     <dependencies>
@@ -46,21 +46,20 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
+            <groupId>smack</groupId>
+            <artifactId>smack</artifactId>
+            <scope>system</scope>
+            <systemPath>${smack.path}/smack.jar</systemPath>
+            <version>1</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
+            <groupId>smack</groupId>
+            <artifactId>smackx</artifactId>
+            <scope>system</scope>
+            <systemPath>${smack.path}/smackx.jar</systemPath>
+            <version>1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>sphinx</groupId>
             <artifactId>sphinx</artifactId>
             <scope>system</scope>
@@ -101,7 +100,7 @@
             <scope>system</scope>
             <systemPath>${sphinx.path}/WSJ_8gau_13dCep_8kHz_31mel_200Hz_3500Hz.jar</systemPath>
             <version>1</version>
-        </dependency>
+        </dependency-->
     </dependencies>
 
     <build>

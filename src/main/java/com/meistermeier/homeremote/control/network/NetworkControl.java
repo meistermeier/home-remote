@@ -1,7 +1,9 @@
-package com.meistermeier.homeremote.network;
+package com.meistermeier.homeremote.control.network;
 
+import com.google.common.collect.Sets;
 import com.meistermeier.homeremote.command.Command;
 import com.meistermeier.homeremote.command.CommandRegistry;
+import com.meistermeier.homeremote.control.Control;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,16 +11,19 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Gerrit Meier
  */
-public class NetworkControl extends Thread {
+public class NetworkControl implements Control {
 
     private final static Logger LOG = LoggerFactory.getLogger(NetworkControl.class);
 
     private ServerSocket serverSocket;
     private final CommandRegistry commandRegistry;
+    private final Set<Thread> clientThreadSet = Sets.newHashSet();
+    private ServerThread serverThread;
 
     public NetworkControl(CommandRegistry commandRegistry, int port) {
         this.commandRegistry = commandRegistry;
@@ -26,22 +31,47 @@ public class NetworkControl extends Thread {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            LOG.error("Could not acquire port to listen for incomcing commands", e);
-
+            LOG.error("Could not acquire port to listen for incoming commands", e);
+            throw new RuntimeException("Could not acquire port to listen for incoming commands", e);
         }
+    }
+
+    public void start() {
+        serverThread = new ServerThread();
+        serverThread.start();
     }
 
     @Override
-    public void run() {
-        while (true) {
-            try {
-                Socket socket = serverSocket.accept();
-                new Thread(new NetworkControlHandler(socket)).start();
-            } catch (IOException e) {
-                LOG.error("An error occurs while accepting connections", e);
+    public void shutdown() {
+        serverThread.shutdown();
+    }
+
+    class ServerThread extends Thread {
+        boolean running = true;
+
+        @Override
+        public void run() {
+            while (running) {
+                try {
+                    Socket socket = serverSocket.accept();
+                    Thread clientThread = new Thread(new NetworkControlHandler(socket));
+                    clientThread.start();
+                    clientThreadSet.add(clientThread);
+                } catch (IOException e) {
+                    LOG.error("An error occurs while accepting connections", e);
+                }
             }
         }
+
+        public void shutdown() {
+            for (Thread thread : clientThreadSet) {
+                thread.interrupt();
+            }
+            running = false;
+            interrupt();
+        }
     }
+
 
     class NetworkControlHandler implements Runnable {
         private final Socket socket;
@@ -61,18 +91,22 @@ public class NetworkControl extends Thread {
                 while (!disconnected) {
                     String commandInput;
                     while (!(commandInput = br.readLine()).equals("quit")) {
-                        Optional<Command> commandOptional = commandRegistry.getCommand(commandInput);
+                        Optional<Command> commandOptional = commandRegistry.getNetworkCommand(commandInput);
                         if (commandOptional.isPresent()) {
                             Command command = commandOptional.get();
-                            String result = command.evaluateAndExectue(commandInput);
+                            String result = command.execute(commandInput);
 
                             writer.write(result);
                             writer.write("\n");
                             writer.flush();
 
-                        }
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(commandInput);
+                        } else {
+                            StringBuilder helpResponse = new StringBuilder("could not find any matching command\nAvailable commands are:\n");
+                            for (Command command : commandRegistry.getCommandSet()) {
+                                helpResponse.append(command.getNetworkKeyword()).append("\n");
+                            }
+                            writer.write(helpResponse.toString());
+                            writer.flush();
                         }
                     }
 

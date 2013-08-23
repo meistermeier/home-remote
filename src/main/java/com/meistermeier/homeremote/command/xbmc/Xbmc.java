@@ -1,4 +1,4 @@
-package com.meistermeier.homeremote.xbmc;
+package com.meistermeier.homeremote.command.xbmc;
 
 /**
  * @author Gerrit Meier

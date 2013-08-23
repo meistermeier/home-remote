@@ -1,50 +1,48 @@
 package com.meistermeier.homeremote.command;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author Gerrit Meier
  */
-public interface Command extends ApplicationContextAware {
-    final static Logger LOG = LoggerFactory.getLogger(Command.class);
+public interface Command {
 
-    /**
-     * default register of command implementation
-     */
-    default void registerCommand() {
-        String[] possibleCommandRegistryBeans = getApplicationContext().getBeanNamesForType(CommandRegistry.class);
-        if (possibleCommandRegistryBeans.length == 1) {
-            CommandRegistry commandRegistry = (CommandRegistry) getApplicationContext().getBean(possibleCommandRegistryBeans[0]);
-            commandRegistry.register(this);
-            LOG.info("registered {} in commands.", getClass());
-        } else {
-            LOG.error("could not register command. There is no such bean for CommandRegistry.");
-        }
+    String getName();
 
+    String getNetworkKeyword();
+
+    String getXmppKeyword();
+
+    String getVoiceKeyword();
+
+    String[] getCommands();
+
+    String execute(String args);
+
+    default String cleanArgsFromKeywords(String args) {
+        args = args.replace(getNetworkKeyword(), StringUtils.EMPTY);
+        args = args.replace(getNetworkKeyword(), StringUtils.EMPTY);
+        args = args.replace(getNetworkKeyword(), StringUtils.EMPTY);
+        return args.trim();
     }
 
-    ApplicationContext getApplicationContext();
+    default String getHelp() {
+        StringBuilder helpBuilder = new StringBuilder("available options:\n");
 
-    String[] getActivationCommands();
+        for (String command : getCommands()) {
+            helpBuilder.append(command).append("\n");
+        }
 
-    default boolean isRegisteredFor(String command) {
-        return ArrayUtils.contains(getActivationCommands(), command);
+        return helpBuilder.toString();
     }
 
-    String evaluateAndExectue(String options);
+    default String getInfo() {
+        StringBuilder infoBuilder = new StringBuilder();
+        infoBuilder.append(getName()).append("\n")
+                .append("network trigger: ").append(getNetworkKeyword()).append("\n")
+                .append("xmpp trigger: ").append(getXmppKeyword()).append("\n")
+                .append("voice trigger: ").append(getVoiceKeyword()).append("\n");
 
-    default String removeActivationString(String command) {
-        if (StringUtils.isBlank(command)) {
-            return StringUtils.EMPTY;
-        }
-        for (String activateCommand : getActivationCommands()) {
-            command = command.replace(activateCommand, StringUtils.EMPTY);
-        }
-        return command.trim();
+        return infoBuilder.toString();
     }
 }
