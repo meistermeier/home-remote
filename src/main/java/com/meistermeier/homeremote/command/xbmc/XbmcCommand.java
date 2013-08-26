@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
  */
 public class XbmcCommand implements Command {
 
-    private final static Logger LOG = LoggerFactory.getLogger(XbmcCommand.class);
-
     private static final String NAME = "XBMC";
 
     private static final String VOICE_KEYWORD = "media player";
@@ -49,7 +47,7 @@ public class XbmcCommand implements Command {
     }
 
     @Override
-    public String[] getCommands() {
+    public String[] getOptions() {
         return new String[]{OPTION_PAUSE, OPTION_PLAY, OPTION_STOP};
     }
 

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * Straight forward implementation for a xmpp client listening for orders.
+ * Straight forward implementation for a xmpp client listening for commands.
  *
  * @author Gerrit Meier
  */
@@ -120,7 +120,7 @@ public class XmppControl implements Control {
                     chat.addMessageListener((newChat, message) -> {
                         try {
                             String commandInput = message.getBody();
-                            Optional<Command> commandOptional = commandRegistry.getNetworkCommand(commandInput);
+                            Optional<Command> commandOptional = commandRegistry.getXmppCommand(commandInput);
                             if (commandOptional.isPresent()) {
                                 Command command = commandOptional.get();
                                 String result = command.execute(commandInput);

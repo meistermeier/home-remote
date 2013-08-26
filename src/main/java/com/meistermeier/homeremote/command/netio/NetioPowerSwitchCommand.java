@@ -4,8 +4,6 @@ import com.meistermeier.homeremote.command.Command;
 
 /**
  * Wrapper for my PD Unit
- * Not in use by now
- *
  * @author Gerrit Meier
  */
 public class NetioPowerSwitchCommand implements Command {
@@ -41,7 +39,7 @@ public class NetioPowerSwitchCommand implements Command {
     }
 
     @Override
-    public String[] getCommands() {
+    public String[] getOptions() {
         return new String[]{OPTION_ON + " <unit>", OPTION_OFF + " <unit>", OPTION_STATUS};  //To change body of implemented methods use File | Settings | File Templates.
     }
 

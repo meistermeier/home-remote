@@ -16,15 +16,8 @@ public class BuildInCommand implements Command {
     private static final String XMPP_KEYWORD = "system";
     private static final String VOICE_KEYWORD = "system";
 
-    /**
-     * Retrieves the current status and help for control and commands registered in the application.
-     */
     private static final String OPTION_STATUS = "status";
 
-    /**
-     * Returns the current IP address of the device. Helpful in combination with the auto connected xmpp client
-     * to find the device in your local network.
-     */
     private static final String OPTION_IP = "ip";
 
     private final CommandRegistry registry;
@@ -54,7 +47,7 @@ public class BuildInCommand implements Command {
     }
 
     @Override
-    public String[] getCommands() {
+    public String[] getOptions() {
         return new String[]{OPTION_STATUS};
     }
 
@@ -75,6 +68,9 @@ public class BuildInCommand implements Command {
         }
     }
 
+    /**
+     * Retrieves the current status and help for control and commands registered in the application.
+     */
     protected String getStatus() {
         StringBuilder statusBuilder = new StringBuilder();
 
@@ -85,6 +81,10 @@ public class BuildInCommand implements Command {
         return statusBuilder.toString();
     }
 
+    /**
+     * Returns the current IP address of the device. Helpful in combination with the auto connected xmpp client
+     * to find the device in your local network.
+     */
     protected String getIP() throws UnknownHostException {
         return InetAddress.getLocalHost().getHostAddress();
     }

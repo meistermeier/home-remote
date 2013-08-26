@@ -23,6 +23,8 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * Initializer class and main registry
+ *
  * @author Gerrit Meier
  */
 public class HomeRemote {
