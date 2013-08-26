@@ -107,6 +107,8 @@ public class HomeRemote {
 
     protected void initElro() {
         LOG.debug("initializing elro");
+
+        LOG.warn("no elro / 433 Mhz transmitter support");
     }
 
     protected void initNetio() {
@@ -132,6 +134,8 @@ public class HomeRemote {
 
     protected void initVoice() {
         LOG.debug("initializing voice");
+
+        LOG.warn("voice control not supported");
     }
 
     protected void initXmpp() {
