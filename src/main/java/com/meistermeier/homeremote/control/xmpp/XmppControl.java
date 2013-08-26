@@ -14,11 +14,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
+ * Straight forward implementation for a xmpp client listening for orders.
+ *
  * @author Gerrit Meier
  */
-public class XmppClient implements Control {
+public class XmppControl implements Control {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XmppClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XmppControl.class);
 
     private static final Presence AVAILABLE_STATUS = new Presence(Presence.Type.available);
     private final String user;
@@ -29,10 +31,10 @@ public class XmppClient implements Control {
     private final CommandRegistry commandRegistry;
 
     private XMPPConnection connection;
-    private XmppClient.XmppThread xmppThread;
+    private XmppControl.XmppThread xmppThread;
     private XmppConnectionThread xmppConnectionThread;
 
-    public XmppClient(String user, String password, String host, int port, String service, CommandRegistry commandRegistry) {
+    public XmppControl(String user, String password, String host, int port, String service, CommandRegistry commandRegistry) {
         if (StringUtils.isBlank(user) || StringUtils.isBlank(host) || port == 0 || StringUtils.isBlank(service)) {
             throw new RuntimeException("not all params set to connect");
         }

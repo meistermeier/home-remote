@@ -1,5 +1,8 @@
 package com.meistermeier.homeremote.command;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * @author Gerrit Meier
  */
@@ -11,7 +14,8 @@ public class BuildInCommand implements Command {
     private static final String XMPP_KEYWORD = "system";
     private static final String VOICE_KEYWORD = "system";
 
-    private static final String STATUS = "status";
+    private static final String OPTION_STATUS = "status";
+    private static final String OPTION_IP = "ip";
 
     private final CommandRegistry registry;
 
@@ -41,15 +45,21 @@ public class BuildInCommand implements Command {
 
     @Override
     public String[] getCommands() {
-        return new String[]{STATUS};
+        return new String[]{OPTION_STATUS};
     }
 
     @Override
     public String execute(String args) {
         String cleanedArgs = cleanArgsFromKeywords(args);
         switch (cleanedArgs) {
-            case STATUS:
+            case OPTION_STATUS:
                 return getStatus();
+            case OPTION_IP:
+                try {
+                    return getIP();
+                } catch (UnknownHostException e) {
+                    return "could not retrieve my ip address.";
+                }
             default:
                 return "unknown option\n" + getHelp();
         }
@@ -65,5 +75,8 @@ public class BuildInCommand implements Command {
         return statusBuilder.toString();
     }
 
+    protected String getIP() throws UnknownHostException {
+        return InetAddress.getLocalHost().getHostAddress();
+    }
 
 }

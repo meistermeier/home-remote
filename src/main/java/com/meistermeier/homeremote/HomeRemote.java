@@ -11,7 +11,7 @@ import com.meistermeier.homeremote.command.xbmc.XbmcCommand;
 import com.meistermeier.homeremote.command.xbmc.XbmcControl;
 import com.meistermeier.homeremote.control.Control;
 import com.meistermeier.homeremote.control.network.NetworkControl;
-import com.meistermeier.homeremote.control.xmpp.XmppClient;
+import com.meistermeier.homeremote.control.xmpp.XmppControl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,9 +141,9 @@ public class HomeRemote {
         String xmppHost = properties.getProperty("xmpp.host");
         String xmppPort = properties.getProperty("xmpp.port");
         String xmppService = properties.getProperty("xmpp.service");
-        XmppClient xmppClient = new XmppClient(xmppUser, xmppPassword, xmppHost, Integer.parseInt(xmppPort), xmppService, registry);
-        xmppClient.initConnection();
-        controlSet.add(xmppClient);
+        XmppControl xmppControl = new XmppControl(xmppUser, xmppPassword, xmppHost, Integer.parseInt(xmppPort), xmppService, registry);
+        xmppControl.initConnection();
+        controlSet.add(xmppControl);
     }
 
     protected void loadProperties() {

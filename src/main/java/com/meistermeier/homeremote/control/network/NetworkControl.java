@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
+ * Simple network support to control application (e.g. telnet)
+ *
  * @author Gerrit Meier
  */
 public class NetworkControl implements Control {
