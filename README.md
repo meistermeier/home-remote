@@ -40,6 +40,14 @@ file in your home directory. Windows users may replace the path in the applicati
 ### Elro power outlets (433 Mhz Radio Transmitter)
 First tests on the raspberry pi where successful. Still in integration phase.
 
+### Re-enable voice support
+Bring back the voice support to control your home Star Trek style :) But avoid movies to pause or stop themselves by voice recognition that really sucks.
+
+### Sensor support
+This will be the next milestone. Support various sensors to bring make this application a home automation system. It's also necessary to create some kind of DSL
+ to map sensors to actions (commands).
+
+
 [1]: http://xbmc.org/ "XBMC"
 [2]: http://sourceforge.net/projects/cmusphinx/files/sphinx4/1.0%20beta6/ "sphinx at sourceforge"
 [3]: http://www.igniterealtime.org/projects/smack "smack project site"

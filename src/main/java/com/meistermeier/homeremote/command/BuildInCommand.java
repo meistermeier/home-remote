@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
+ * Some build in commands that don't depend on a external lib and other systems, connections etc.
+ *
  * @author Gerrit Meier
  */
 public class BuildInCommand implements Command {
@@ -14,7 +16,15 @@ public class BuildInCommand implements Command {
     private static final String XMPP_KEYWORD = "system";
     private static final String VOICE_KEYWORD = "system";
 
+    /**
+     * Retrieves the current status and help for control and commands registered in the application.
+     */
     private static final String OPTION_STATUS = "status";
+
+    /**
+     * Returns the current IP address of the device. Helpful in combination with the auto connected xmpp client
+     * to find the device in your local network.
+     */
     private static final String OPTION_IP = "ip";
 
     private final CommandRegistry registry;
