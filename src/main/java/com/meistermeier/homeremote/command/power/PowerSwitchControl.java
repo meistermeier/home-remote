@@ -1,7 +1,9 @@
 package com.meistermeier.homeremote.command.power;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -9,11 +11,14 @@ import java.net.Socket;
  */
 public class PowerSwitchControl {
 
+    private final static Logger LOG = LoggerFactory.getLogger(PowerSwitchControl.class);
+
     private final PowerSwitch powerSwitch;
 
     enum Message {
         SWITCH_ON,
-        SWITCH_OFF
+        SWITCH_OFF,
+        STATUS
     }
 
     public PowerSwitchControl(PowerSwitch powerSwitch) {
@@ -21,29 +26,79 @@ public class PowerSwitchControl {
     }
 
     public String switchOn(int unit) {
-        return "switched on " + unit;
+        try {
+            return sendMessage(Message.SWITCH_ON, unit);
+        } catch (IOException e) {
+            LOG.error("Could not send switch on message", e);
+            return "Could not set status";
+        }
     }
 
     public String switchOff(int unit) {
-        return "switched off " + unit;
+        try {
+            return sendMessage(Message.SWITCH_OFF, unit);
+        } catch (IOException e) {
+            LOG.error("Could not send switch off message", e);
+            return "Could not set status";
+        }
     }
 
-    protected void sendMessage(Message message, int unit) throws IOException {
+    public String status() {
+        try {
+            return sendMessage(Message.STATUS, null);
+        } catch (IOException e) {
+            LOG.error("Could not get switch status", e);
+            return "Could not get status";
+        }
+    }
+
+    protected String sendMessage(Message message, Integer unit) throws IOException {
         Socket socket = new Socket(powerSwitch.getAddress(), powerSwitch.getPort());
         OutputStream outputStream = socket.getOutputStream();
         String loginString = "login " + powerSwitch.getUser() + " " + powerSwitch.getPassword() + "\n";
         outputStream.write(loginString.getBytes());
+        outputStream.flush();
 
-        String commandString;
-        switch(message) {
+        switch (message) {
             case SWITCH_ON:
-                commandString = createSwitchCommand(unit);
-                break;
+                return sendSwitchOnCommand(socket, unit);
+            case SWITCH_OFF:
+                return sendSwitchOffCommand(socket, unit);
+            case STATUS:
+                return sendStatusCommand(socket);
+            default:
+                return "Unknown message command";
         }
-        outputStream.write(loginString.getBytes());
     }
 
-    private String createSwitchCommand(int unit) {
-        return "port list uuuu";
+    private String sendStatusCommand(Socket socket) throws IOException {
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(("port list").getBytes());
+        outputStream.flush();
+
+        return getAnswer(socket);
+    }
+
+    private String sendSwitchOnCommand(Socket socket, int unit) throws IOException {
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(("port " + unit + " 1").getBytes());
+        outputStream.flush();
+
+        return getAnswer(socket);
+    }
+
+    private String sendSwitchOffCommand(Socket socket, int unit) throws IOException {
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(("port " + unit + " 0").getBytes());
+        outputStream.flush();
+
+        return getAnswer(socket);
+    }
+
+    private String getAnswer(Socket socket) throws IOException {
+        InputStream inputStream = socket.getInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+        return br.readLine();
     }
 }

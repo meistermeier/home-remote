@@ -6,11 +6,11 @@ import com.meistermeier.homeremote.command.CommandRegistry;
 import com.meistermeier.homeremote.command.power.PowerSwitch;
 import com.meistermeier.homeremote.command.power.PowerSwitchCommand;
 import com.meistermeier.homeremote.command.power.PowerSwitchControl;
-import com.meistermeier.homeremote.control.Control;
-import com.meistermeier.homeremote.control.network.NetworkControl;
 import com.meistermeier.homeremote.command.xbmc.Xbmc;
 import com.meistermeier.homeremote.command.xbmc.XbmcCommand;
 import com.meistermeier.homeremote.command.xbmc.XbmcControl;
+import com.meistermeier.homeremote.control.Control;
+import com.meistermeier.homeremote.control.network.NetworkControl;
 import com.meistermeier.homeremote.control.xmpp.XmppClient;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -111,7 +111,12 @@ public class HomeRemote {
 
     protected void initNetio() {
         LOG.debug("initializing netio");
-        PowerSwitch powerSwitch = new PowerSwitch();
+        String host = properties.getProperty("netio.host");
+        String port = properties.getProperty("netio.port");
+        String user = properties.getProperty("netio.user");
+        String password = properties.getProperty("netio.password");
+
+        PowerSwitch powerSwitch = new PowerSwitch(host, Integer.parseInt(port), user, password);
         PowerSwitchControl powerSwitchControl = new PowerSwitchControl(powerSwitch);
         PowerSwitchCommand powerSwitchCommand = new PowerSwitchCommand(powerSwitchControl);
         registry.register(powerSwitchCommand);

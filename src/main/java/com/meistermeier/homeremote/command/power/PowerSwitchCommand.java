@@ -12,6 +12,7 @@ public class PowerSwitchCommand implements Command {
 
     private final String OPTION_ON = "on";
     private final String OPTION_OFF = "off";
+    private final String OPTION_STATUS = "status";
     private final PowerSwitchControl powerSwitchControl;
 
 
@@ -41,28 +42,31 @@ public class PowerSwitchCommand implements Command {
 
     @Override
     public String[] getCommands() {
-        return new String[]{OPTION_ON + " <unit>", OPTION_OFF + " <unit>"};  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[]{OPTION_ON + " <unit>", OPTION_OFF + " <unit>", OPTION_STATUS};  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public String execute(String args) {
         String cleanedArgs = cleanArgsFromKeywords(args);
         String[] arguments = cleanedArgs.split(" ");
-        if (arguments.length != 2) {
+        if (arguments.length > 2) {
             return "unknown command and argument count (" + cleanedArgs + ")\n" + getHelp();
         }
         int unit = -1;
-        try {
-            unit = Integer.parseInt(arguments[1].trim());
-        } catch (NumberFormatException e) {
-            return "unknown device: " + arguments[1];
+        if (arguments.length == 2) {
+            try {
+                unit = Integer.parseInt(arguments[1].trim());
+            } catch (NumberFormatException e) {
+                return "unknown device: " + arguments[1];
+            }
         }
-
         switch (arguments[0].trim()) {
             case OPTION_ON:
                 return powerSwitchControl.switchOn(unit);
             case OPTION_OFF:
                 return powerSwitchControl.switchOff(unit);
+            case OPTION_STATUS:
+                return powerSwitchControl.status();
             default:
                 return "unknown control argument (" + arguments[0] + ")\n" + getHelp();
 
