@@ -3,9 +3,9 @@ package com.meistermeier.homeremote;
 import com.google.common.collect.Sets;
 import com.meistermeier.homeremote.command.BuildInCommand;
 import com.meistermeier.homeremote.command.CommandRegistry;
-import com.meistermeier.homeremote.command.power.PowerSwitch;
-import com.meistermeier.homeremote.command.power.PowerSwitchCommand;
-import com.meistermeier.homeremote.command.power.PowerSwitchControl;
+import com.meistermeier.homeremote.command.netio.NetioPowerSwitch;
+import com.meistermeier.homeremote.command.netio.NetioPowerSwitchCommand;
+import com.meistermeier.homeremote.command.netio.NetioPowerSwitchControl;
 import com.meistermeier.homeremote.command.xbmc.Xbmc;
 import com.meistermeier.homeremote.command.xbmc.XbmcCommand;
 import com.meistermeier.homeremote.command.xbmc.XbmcControl;
@@ -116,10 +116,10 @@ public class HomeRemote {
         String user = properties.getProperty("netio.user");
         String password = properties.getProperty("netio.password");
 
-        PowerSwitch powerSwitch = new PowerSwitch(host, Integer.parseInt(port), user, password);
-        PowerSwitchControl powerSwitchControl = new PowerSwitchControl(powerSwitch);
-        PowerSwitchCommand powerSwitchCommand = new PowerSwitchCommand(powerSwitchControl);
-        registry.register(powerSwitchCommand);
+        NetioPowerSwitch netioPowerSwitch = new NetioPowerSwitch(host, Integer.parseInt(port), user, password);
+        NetioPowerSwitchControl netioPowerSwitchControl = new NetioPowerSwitchControl(netioPowerSwitch);
+        NetioPowerSwitchCommand netioPowerSwitchCommand = new NetioPowerSwitchCommand(netioPowerSwitchControl);
+        registry.register(netioPowerSwitchCommand);
     }
 
     protected void initTelnet() {
