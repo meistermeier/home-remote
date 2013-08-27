@@ -11,6 +11,7 @@
     <properties>
         <!--sphinx.path>${sphinx}</sphinx.path-->
         <smack.path>${smack}</smack.path>
+        <pi4j.version>0.0.5</pi4j.version>
     </properties>
 
     <dependencies>
@@ -59,6 +60,11 @@
             <systemPath>${smack.path}/smackx.jar</systemPath>
             <version>1</version>
         </dependency>
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
+            <version>${pi4j.version}</version>
+        </dependency>
         <!--dependency>
             <groupId>sphinx</groupId>
             <artifactId>sphinx</artifactId>
@@ -102,6 +108,17 @@
             <version>1</version>
         </dependency-->
     </dependencies>
+    <repositories>
+        <repository>
+            <id>oss-snapshots-repo</id>
+            <name>Sonatype OSS Maven Repository</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
