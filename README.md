@@ -25,7 +25,8 @@ At this time the home remote project defines the following inputs and outputs:
 ~~Since there is no Sphinx stuff nor up-to-date smack version available in the official Maven Repository, you got to take care of yourself and download [CMU Sphinx][2]
 respectively [smack][3] manually.
 If you use maven to compile the sources at the command line you must define the sphinx and smack lib parameter.~~
-**gradle docs are missing..do your best**
+
+**gradle docs are missing..and there is a hard coded path for the xmpp lib...just do your best**
 
 
 ## Configuration
