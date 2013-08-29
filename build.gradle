@@ -3,6 +3,9 @@ apply plugin: 'application'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/groups/public"
+    }
 }
 ext.smack = "/home/gerrit/libs/smack_3_3_0"
 
@@ -12,6 +15,7 @@ dependencies {
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.7'
     compile group: 'com.google.guava', name: 'guava', version: '13.0'
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    compile group: 'com.pi4j', name: 'pi4j-core', version: '0.0.5'
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 
