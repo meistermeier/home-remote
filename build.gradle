@@ -4,7 +4,7 @@ apply plugin: 'application'
 repositories {
     mavenCentral()
 }
-ext.smack = "/home/gerrit/libs/smack_3_3_0"
+ext.smack = "/home/pi/libs/smack_3_3_0"
 
 dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.2.5'
