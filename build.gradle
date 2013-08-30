@@ -4,7 +4,7 @@ apply plugin: 'application'
 repositories {
     mavenCentral()
 }
-ext.smack = "/home/pi/libs/smack_3_3_0"
+ext.libDir = "lib"
 
 dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.2.5'
@@ -15,8 +15,8 @@ dependencies {
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 
-    compile files(ext.smack + "/smackx.jar")
-    compile files(ext.smack + "/smack.jar")
+    compile files(ext.libDir + "/smackx.jar")
+    compile files(ext.libDir + "/smack.jar")
 }
 
 task wrapper(type: Wrapper) {
