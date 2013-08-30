@@ -22,12 +22,11 @@ At this time the home remote project defines the following inputs and outputs:
 
 ## Compile
 **Note: This app is designed for JDK8 to get the best out of my pi :)**
-
-Since there is no Sphinx stuff nor up-to-date smack version available in the official Maven Repository, you got to take care of yourself and download [CMU Sphinx][2]
+~~Since there is no Sphinx stuff nor up-to-date smack version available in the official Maven Repository, you got to take care of yourself and download [CMU Sphinx][2]
 respectively [smack][3] manually.
-If you use maven to compile the sources at the command line you must define the sphinx and smack lib parameter.
+If you use maven to compile the sources at the command line you must define the sphinx and smack lib parameter.~~
 
-e.g. `mvn -Dsphinx=path/to/sphinx/lib -Dsmack=path/to/smack/lib clean package`
+**gradle docs are missing..and there is a hard coded path for the xmpp lib...just do your best**
 
 
 ## Configuration

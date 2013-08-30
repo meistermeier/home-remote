@@ -1,7 +1,10 @@
 package com.meistermeier.homeremote.command;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * Some build in commands that don't depend on a external lib and other systems, connections etc.
@@ -62,6 +65,8 @@ public class BuildInCommand implements Command {
                     return getIP();
                 } catch (UnknownHostException e) {
                     return "could not retrieve my ip address.";
+                } catch (SocketException e) {
+                    return "could not retrieve my ip address.";
                 }
             default:
                 return "unknown option\n" + getHelp();
@@ -85,8 +90,23 @@ public class BuildInCommand implements Command {
      * Returns the current IP address of the device. Helpful in combination with the auto connected xmpp client
      * to find the device in your local network.
      */
-    protected String getIP() throws UnknownHostException {
-        return InetAddress.getLocalHost().getHostAddress();
+    protected String getIP() throws UnknownHostException, SocketException {
+        StringBuilder hostAddressBuilder = new StringBuilder();
+
+        Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+        while (networkInterfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = networkInterfaces.nextElement();
+            if (!networkInterface.isUp() || networkInterface.isLoopback() || networkInterface.isVirtual()) {
+                continue;
+            }
+
+            Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+            while (inetAddresses.hasMoreElements()) {
+                InetAddress inetAddress = inetAddresses.nextElement();
+                hostAddressBuilder.append(inetAddress.getHostAddress()).append("\n");
+            }
+        }
+        return hostAddressBuilder.toString();
     }
 
 }
